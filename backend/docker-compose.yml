@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mysafepass-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=${FLASK_ENV:-production}
+      - SECRET_KEY=${SECRET_KEY:-change-this-in-production}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-this-in-production}
+      - DATABASE_PATH=/app/data/mysafepass.db
+      - DATABASE_ENCRYPTION_KEY=${DATABASE_ENCRYPTION_KEY:-change-this-in-production}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:5173,http://localhost:3000}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # Frontend service (optional - can run separately)
+  # frontend:
+  #   build:
+  #     context: ../
+  #     dockerfile: Dockerfile
+  #   container_name: mysafepass-frontend
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - backend
+  #   restart: unless-stopped
+
+networks:
+  default:
+    driver: bridge

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.codex
+.DS_Store
+.local/
+.env.local
+.local/state/scribe/scribe.db-wal
+.local/state/scribe/scribe.db-shm
